@@ -4,7 +4,7 @@ if (location.href.split("?")[0].split("/").slice(-1)[0].split('.')[0].includes('
 
 function detailPost() {
     let postId = getUrlParams(location.href, "id", 1);
-    console.log(`${config.BaseUrl}/posts/${postId}`);
+//  console.log(`${config.BaseUrl}/posts/${postId}`);
     fetch(`${config.BaseUrl}/posts/${postId}`)
         .then(response => {
             if (response.ok) {

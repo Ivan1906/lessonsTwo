@@ -7,6 +7,7 @@ function loadListPost() {
         .then(response => response.json())
         .then(json => Object.keys(json).map((key) => json[key]))
         .then(data => data.map((obj, index) => {
+            //let divEl =createNode('h3', {'class': 'atr', 'id': 'one'}, "", "<h1>111</h1>");
             let elemPost = document.createElement('div');
             elemPost.className = 'post';
 
