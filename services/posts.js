@@ -1,4 +1,4 @@
-if (location.href.split("?")[0].split("/").slice(-1)[0].split('.')[0].includes('index')) {
+if (getNameLoadPage(location.href).includes('index')) {
     document.addEventListener('DOMContentLoaded', loadListPost);
 }
 
@@ -7,21 +7,14 @@ function loadListPost() {
         .then(response => response.json())
         .then(json => Object.keys(json).map((key) => json[key]))
         .then(data => data.map((obj, index) => {
-            //let divEl =createNode('h3', {'class': 'atr', 'id': 'one'}, "", "<h1>111</h1>");
-            let elemPost = document.createElement('div');
-            elemPost.className = 'post';
-
-            let elemTitle = document.createElement('h3');
-            elemTitle.innerText = `${index + 1}. ${obj.title}`;
-
-            let elemButton = document.createElement('a');
-            elemButton.setAttribute('name', `posts/${obj.id}`);
-            elemButton.addEventListener('click', () => location.href = `detail.html?id=${obj.id}`);
-            elemButton.innerText = 'Детально';
-            elemButton.className = 'btn';
             
-            elemPost.appendChild(elemTitle);
+            let elemPost = createNode('div', {"class": "post"});
+            elemPost.appendChild(createNode('h3', null, `${index + 1}. ${obj.title}`));
+
+            let elemButton = createNode('a', {"name":`posts/${obj.id}`, "class": "btn"}, "Детально");
+                elemButton.addEventListener('click', () => location.href = `detail.html?id=${obj.id}`);
             elemPost.appendChild(elemButton);
+
             document.getElementById('content').appendChild(elemPost);
         }
     ));

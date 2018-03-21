@@ -1,10 +1,11 @@
-if (location.href.split("?")[0].split("/").slice(-1)[0].split('.')[0].includes('detail')) {
+if (getNameLoadPage(location.href).includes('detail')) {
     document.addEventListener('DOMContentLoaded', detailPost);
 }
 
 function detailPost() {
-    let postId = getUrlParams(location.href, "id", 1);
-//  console.log(`${config.BaseUrl}/posts/${postId}`);
+    let postId = getUrlParamByName(location.href, "id");
+    //let postId = getUrlParamByPosition(location.href, 1);
+
     fetch(`${config.BaseUrl}/posts/${postId}`)
         .then(response => {
             if (response.ok) {
@@ -16,21 +17,11 @@ function detailPost() {
         .then(data => {
             document.getElementById("detailContent").innerHTML = "";
 
-            let elemPost = document.createElement('div');
-            elemPost.className = 'post';
+            let elemPost = createNode('div', {"class": "post"});
+                elemPost.appendChild(createNode('h2', null, `${data[2]}`));
+                elemPost.appendChild(createNode('p', null, `${data[3]}`));
+            let elemCommets = createNode('div', {"class": "comments", "id": "comments"});
 
-            let elemCommets = document.createElement('div');
-            elemCommets.id = 'comments';
-            elemCommets.className = 'comments';
-
-            let elemTitle = document.createElement('h2');
-            elemTitle.innerText = data[2];
-
-            let elemBody = document.createElement('p');
-            elemBody.innerText = data[3];
-
-            elemPost.appendChild(elemTitle);
-            elemPost.appendChild(elemBody);
             document.getElementById('detailContent').appendChild(elemPost).appendChild(elemCommets);
             
             getCommentsByPostId(postId);
@@ -48,21 +39,12 @@ function getCommentsByPostId(urlPost) {
     })
     .then(json => Object.keys(json).map(key => json[key]))
     .then(data => data.map((obj, index) => {
-        let elemComment = document.createElement('div');
-        elemComment.className = 'comment';
+        let elemComment = createNode('div', {"class": "comment"});
 
-        let elemName = document.createElement('h4');
-        elemName.innerText = `${index + 1}. ${obj.name}`.toUpperCase();
+        elemComment.appendChild(createNode('h4', null, `${index + 1}. ${obj.name}`.toUpperCase()));
+        elemComment.appendChild(createNode('address', null, `${obj.email}`))
+        elemComment.appendChild(createNode('p', null, `${obj.body}`))
 
-        let elemEmail = document.createElement('address');
-        elemEmail.innerText = obj.email;
-
-        let elemBody = document.createElement('p');
-        elemBody.innerText = obj.body;
-
-        elemComment.appendChild(elemName);
-        elemComment.appendChild(elemEmail);
-        elemComment.appendChild(elemBody);
         document.getElementById('comments').appendChild(elemComment);
     }))
     .catch(error => document.getElementById("comments").innerHTML = `<h1>${error.message}</h1>`);
